@@ -34,11 +34,10 @@ jobs:
         
       - name: Commit enrichment
         run: |
-          if git diff data | grep . > /dev/null ; then
-            git config --local user.email "action@github.com"
-            git config --local user.name "GitHub Action"
-            git pull
-            git commit -m "update data" data
-            git commit -m "log errors" *.log
-            git push
-          fi
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git pull
+          git commit -m "update data" data
+          git commit -m "log errors" *.log
+          git push
+          
