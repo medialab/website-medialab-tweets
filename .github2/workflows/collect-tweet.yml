@@ -1,0 +1,45 @@
+name: Collect Shogoth Tweets
+
+on:
+  push
+
+jobs:
+  update:
+    name: Collect Metadata
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install -U minet 
+
+      - name: Scrape tweets
+        run: minet twitter scrape tweets 'from:medialab_ScPo' --limit 50 --cookie  > data/shogoth_tweets.csv
+
+      - name: Filter the username containing shogoth
+        run: xsv filter 'and(not(contains(upper(user_name),"SHOGGOTH")),not(contains(upper(user_name),"SHOGOTH")))' data/shogoth_tweets.csv > data/shogoth_tweets_filter.csv
+
+      - name: Download the images contained in the tweets 
+        run: minet fetch media_urls -i data/shogoth_tweets.csv --explode "|" -O data/images --throttle 0 --domain-parallelism 4 > data/report.csv
+
+      - name: Commit enrichment
+        run: |
+          if git diff data | grep . > /dev/null ; then
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git pull
+            git commit -m "update data" data
+            git commit -m "log errors" *.log
+            git push
+          fi
