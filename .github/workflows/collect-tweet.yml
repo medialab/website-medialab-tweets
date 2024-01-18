@@ -39,6 +39,5 @@ jobs:
           git config --local user.name "GitHub Action"
           git pull
           git commit -m "update data" data
-          git commit -m "log errors" *.log
           git push
           
