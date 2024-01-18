@@ -27,14 +27,8 @@ jobs:
           pip install -U minet 
 
       - name: Scrape tweets
-        run: minet twitter scrape tweets 'from:medialab_ScPo' --limit 50 --cookie "${COOKIE}" > data/shogoth_tweets.csv
-
-      - name: Filter the username containing shogoth
-        run: xsv filter 'and(not(contains(upper(user_name),"SHOGGOTH")),not(contains(upper(user_name),"SHOGOTH")))' data/shogoth_tweets.csv > data/shogoth_tweets_filter.csv
-
-      - name: Download the images contained in the tweets 
-        run: minet fetch media_urls -i data/shogoth_tweets.csv --explode "|" -O data/images --throttle 0 --domain-parallelism 4 > data/report.csv
-
+        run: minet twitter scrape tweets 'from:medialab_ScPo' --limit 50 --cookie "${COOKIE}" > data/medialab_tweets.csv
+        
       - name: Commit enrichment
         run: |
           if git diff data | grep . > /dev/null ; then
