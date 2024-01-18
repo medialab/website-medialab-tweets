@@ -1,12 +1,14 @@
-name: Collect Shogoth Tweets
+name: Collect Tweets
 
 on:
   push
 
 jobs:
   update:
-    name: Collect Metadata
+    name: Collect Tweets
     runs-on: ubuntu-latest
+    env:
+      COOKIE: ${{ secrets.COOKIE }}
 
     steps:
       - name: Checkout Repo
@@ -25,7 +27,7 @@ jobs:
           pip install -U minet 
 
       - name: Scrape tweets
-        run: minet twitter scrape tweets 'from:medialab_ScPo' --limit 50 --cookie  > data/shogoth_tweets.csv
+        run: minet twitter scrape tweets 'from:medialab_ScPo' --limit 50 --cookie '${COOKIE}' > data/shogoth_tweets.csv
 
       - name: Filter the username containing shogoth
         run: xsv filter 'and(not(contains(upper(user_name),"SHOGGOTH")),not(contains(upper(user_name),"SHOGOTH")))' data/shogoth_tweets.csv > data/shogoth_tweets_filter.csv
