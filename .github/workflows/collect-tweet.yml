@@ -2,7 +2,7 @@ name: Collect Tweets
 
 on:
   schedule:
-    - cron: "00 03 * * *"
+    - cron: "00 00 * * *"
 
 jobs:
   update:
