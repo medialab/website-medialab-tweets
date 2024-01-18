@@ -34,9 +34,9 @@ jobs:
         
       - name: Commit enrichment
         run: |
-          git add data
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          git add data
           git pull
           git commit -m "update data" data
           git push
