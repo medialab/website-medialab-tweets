@@ -1,7 +1,8 @@
 name: Collect Tweets
 
 on:
-  push
+  schedule:
+    - cron: "00 03 * * *"
 
 jobs:
   update:
