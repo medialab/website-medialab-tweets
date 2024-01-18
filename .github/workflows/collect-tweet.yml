@@ -28,6 +28,9 @@ jobs:
 
       - name: Scrape tweets
         run: minet twitter scrape tweets 'from:medialab_ScPo' --limit 50 --cookie "${COOKIE}" > data/medialab_tweets.csv
+
+      - name: Check 
+        run : ls data 
         
       - name: Commit enrichment
         run: |
