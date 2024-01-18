@@ -1,0 +1,41 @@
+name: Collect Shogoth Tweets
+
+on:
+  push
+
+jobs:
+  update:
+    name: Collect Metadata
+    runs-on: ubuntu-latest
+    env:
+      COOKIE: ${{ secrets.COOKIE }}
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install -U minet 
+
+      - name: Scrape tweets
+        run: minet twitter scrape tweets 'from:medialab_ScPo' --limit 50 --cookie '${COOKIE}' > data/medialab_tweets.csv
+
+      - name: Commit enrichment
+        run: |
+          if git diff data | grep . > /dev/null ; then
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git pull
+            git commit -m "update data" data
+            git commit -m "log errors" *.log
+            git push
+          fi
