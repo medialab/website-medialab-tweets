@@ -1,6 +1,9 @@
 name: Collect Tweets
 
 on:
+  push:
+    branches:
+      - main
   schedule:
     - cron: "0 */4 * * *"
 
